@@ -46,9 +46,13 @@ float4 yuv2rgb(float4 yuv)
 float4 main(float2 tex : TEXCOORD0) : COLOR
 {
 	float4 c0 = tex2D(s0, tex);
-    float4 yuv=rgb2yuv(c0);	
-    float value=round(yuv[0]*255.0/32.0)/255.0*32.0;   
+   
+    float r=round(c0[0]*255.0/32.0)/255.0*32.0;   
+	float g=round(c0[1]*255.0/32.0)/255.0*32.0;   
+	float b=round(c0[2]*255.0/32.0)/255.0*32.0;   
 	  
-	 yuv[0]=value;
-	return yuv2rgb(yuv);
+	c0[0]=r;
+    c0[1]=g;	 
+    c0[2]=b;		
+	return c0;
 }
