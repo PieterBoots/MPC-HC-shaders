@@ -45,30 +45,37 @@ float4 yuv2rgb(float4 yuv)
 
 float4 main(float2 tex : TEXCOORD0) : COLOR
 {
+	float radius=2.0;//1.0 .... 5.0
+	float strength=1.0;//0.5 .... 8.0
+             
+			
+	
 	float4 c0 = tex2D(s0, tex);
+	float4 yuv=rgb2yuv(c0);	
 	float min=999.0;
-	float max=0.0;
-	
+	float max=0.0;	
 	float dx = 1 / width;
-	float dy = 1 / height;
-	
-	float radius=3.0;
-	
+	float dy = 1 / height;	
 	for(int y1=-radius;y1<=radius;y1++)
 	  for(int x1=-radius;x1<=radius;x1++)
 	  {
-	    float4 yuv00 = rgb2yuv(getPixel(tex, x1*dx, y1*dy));
-		if (yuv00[0]>max)
-		   max=yuv00[0];
-	    if (yuv00[0]<min)
-		   min=yuv00[0];
+	    if (x1*x1+y1*y1<=radius*radius)
+		{
+	      float4 yuv00 = rgb2yuv(getPixel(tex, x1*dx, y1*dy));
+		  if (yuv00[0]>max)
+		     max=yuv00[0];
+	      if (yuv00[0]<min)
+		     min=yuv00[0];
+		}
 	  }
-		
-    float4 yuv=rgb2yuv(c0);
-	if (abs(max-yuv[0])<abs(min-yuv[0]))	
-	  yuv[0]=(yuv[0]+max)/2.0;
-	else
-	  yuv[0]=(yuv[0]+min)/2.0;
-	  
+								    
+	
+ 
+	  if (abs(max-yuv[0])<abs(min-yuv[0]) )	
+	    yuv[0]=(yuv[0]*1.0+max*strength)/(1.0+strength);
+    	else
+	    yuv[0]=(yuv[0]*1.0+min*strength)/(1.0+strength);
+
+	 
 	return yuv2rgb(yuv);
 }
